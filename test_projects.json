@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "name": "电商网站重构",
+    "advanced": true,
+    "params": {
+      "hours": 180,
+      "complexity": "medium",
+      "team_size": 4,
+      "duration": 60,
+      "industry": "ecommerce",
+      "team_experience": "intermediate"
+    }
+  },
+  {
+    "id": 2,
+    "name": "金融风控系统",
+    "advanced": true,
+    "params": {
+      "hours": 400,
+      "complexity": "enterprise",
+      "team_size": 8,
+      "duration": 120,
+      "industry": "finance",
+      "team_experience": "senior"
+    }
+  },
+  {
+    "id": 3,
+    "name": "教育平台开发",
+    "advanced": true,
+    "params": {
+      "hours": 250,
+      "complexity": "high",
+      "team_size": 5,
+      "duration": 90,
+      "industry": "education",
+      "team_experience": "senior"
+    }
+  }
+]
