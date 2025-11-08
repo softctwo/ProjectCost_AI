@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>项目成本智能评估系统 - 演示</title>
+
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Ant Design CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/antd@5.12.8/dist/reset.css" />
+
+  <!-- Custom styles -->
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Custom scrollbar styles */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    /* Button styles */
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background: #f8fafc;
+      color: #475569;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    /* Card styles */
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+
+    /* Loading animation */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading {
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #3b82f6;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-lg {
+      width: 32px;
+      height: 32px;
+    }
+
+    /* Hero gradient */
+    .hero-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    /* Status badges */
+    .badge-success {
+      background: #10b981;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-warning {
+      background: #f59e0b;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-info {
+      background: #3b82f6;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <h1 class="text-xl font-bold text-gray-900">项目成本智能评估系统</h1>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button class="btn-secondary">登录</button>
+          <button class="btn-primary">开始使用</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="hero-gradient text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-4xl font-bold mb-4">AI驱动的项目成本评估</h2>
+      <p class="text-xl mb-8 opacity-90">基于SOW文档的智能工作量估算，让项目管理更精准</p>
+      <button class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+        创建新项目
+      </button>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h3 class="text-2xl font-bold text-center mb-12">核心功能</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="card p-6 text-center">
+          <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <h4 class="text-lg font-semibold mb-2">SOW文档解析</h4>
+          <p class="text-gray-600">智能解析SOW文档，自动提取项目需求和关键信息</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="card p-6 text-center">
+          <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+          <h4 class="text-lg font-semibold mb-2">多维评估</h4>
+          <p class="text-gray-600">基于复杂度、技术难度等多个维度进行综合评估</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="card p-6 text-center">
+          <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <h4 class="text-lg font-semibold mb-2">智能估算</h4>
+          <p class="text-gray-600">AI算法提供精准的工作量和成本估算结果</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Projects Section -->
+  <div class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center mb-8">
+        <h3 class="text-2xl font-bold">最近项目</h3>
+        <button class="btn-primary">创建新项目</button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Project Card 1 -->
+        <div class="card p-6">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h4 class="text-lg font-semibold">监管报表系统升级</h4>
+              <p class="text-gray-600 text-sm">金融科技部</p>
+            </div>
+            <span class="badge-success">进行中</span>
+          </div>
+
+          <div class="space-y-3 mb-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">预估工期</span>
+              <span class="font-medium">12周</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">预估工作量</span>
+              <span class="font-medium">960小时</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">复杂度</span>
+              <span class="font-medium">中等</span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="flex justify-between text-sm mb-1">
+              <span class="text-gray-500">进度</span>
+              <span class="font-medium">65%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div>
+            </div>
+          </div>
+
+          <div class="flex items-center">
+            <div class="flex -space-x-2">
+              <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-medium">JD</div>
+              <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-medium">ML</div>
+              <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs font-medium">+3</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Card 2 -->
+        <div class="card p-6">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h4 class="text-lg font-semibold">客户数据迁移项目</h4>
+              <p class="text-gray-600 text-sm">数据工程部</p>
+            </div>
+            <span class="badge-warning">规划中</span>
+          </div>
+
+          <div class="space-y-3 mb-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">预估工期</span>
+              <span class="font-medium">8周</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">预估工作量</span>
+              <span class="font-medium">640小时</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">复杂度</span>
+              <span class="font-medium">高</span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="flex justify-between text-sm mb-1">
+              <span class="text-gray-500">进度</span>
+              <span class="font-medium">0%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-blue-600 h-2 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="flex items-center">
+            <div class="flex -space-x-2">
+              <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-medium">AK</div>
+              <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-white text-xs font-medium">TP</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Card 3 -->
+        <div class="card p-6">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h4 class="text-lg font-semibold">移动银行APP重构</h4>
+              <p class="text-gray-600 text-sm">移动开发部</p>
+            </div>
+            <span class="badge-info">已完成</span>
+          </div>
+
+          <div class="space-y-3 mb-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">预估工期</span>
+              <span class="font-medium">16周</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">预估工作量</span>
+              <span class="font-medium">1280小时</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">复杂度</span>
+              <span class="font-medium">高</span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="flex justify-between text-sm mb-1">
+              <span class="text-gray-500">进度</span>
+              <span class="font-medium">100%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="bg-green-600 h-2 rounded-full" style="width: 100%"></div>
+            </div>
+          </div>
+
+          <div class="flex items-center">
+            <div class="flex -space-x-2">
+              <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white text-xs font-medium">SK</div>
+              <div class="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white text-xs font-medium">RJ</div>
+              <div class="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center text-white text-xs font-medium">+5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wizard Demo Section -->
+  <div class="py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h3 class="text-2xl font-bold text-center mb-12">创建项目向导演示</h3>
+
+      <div class="card p-8">
+        <!-- Step Indicator -->
+        <div class="flex items-center justify-center mb-8">
+          <div class="flex items-center space-x-4">
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium">1</div>
+              <span class="ml-2 text-sm font-medium">上传SOW</span>
+            </div>
+            <div class="w-16 h-0.5 bg-blue-600"></div>
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">2</div>
+              <span class="ml-2 text-sm text-gray-500">项目配置</span>
+            </div>
+            <div class="w-16 h-0.5 bg-gray-300"></div>
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">3</div>
+              <span class="ml-2 text-sm text-gray-500">复杂度评估</span>
+            </div>
+            <div class="w-16 h-0.5 bg-gray-300"></div>
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">4</div>
+              <span class="ml-2 text-sm text-gray-500">评估结果</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 1 Content -->
+        <div class="text-center">
+          <div class="border-2 border-dashed border-gray-300 rounded-lg p-12 mb-6">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M28 8H12a4 4 0 00-4 4v20m0-4v4a4 4 0 004 4h20a4 4 0 004-4V16a4 4 0 00-4-4h-4m-4-4v12m0 0l12-12m-12 12L8 8"></path>
+            </svg>
+            <p class="mt-2 text-lg text-gray-600">拖拽SOW文档到此处上传</p>
+            <p class="text-sm text-gray-500">支持PDF、Word、Excel格式</p>
+          </div>
+
+          <div class="flex justify-center space-x-4">
+            <button class="btn-secondary">选择文件</button>
+            <button class="btn-primary">下一步</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h4 class="text-lg font-semibold mb-4">项目成本智能评估系统</h4>
+          <p class="text-gray-400">基于AI的项目工作量评估工具，让项目管理更精准、更高效。</p>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-4">核心功能</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li>SOW文档智能解析</li>
+            <li>多维复杂度评估</li>
+            <li>AI工作量估算</li>
+            <li>项目进度跟踪</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-4">技术栈</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li>React 18</li>
+            <li>Tailwind CSS</li>
+            <li>Framer Motion</li>
+            <li>Node.js</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+        <p>&copy; 2024 项目成本智能评估系统. 保留所有权利.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Simple interactive elements
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add hover effects to cards
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-2px)';
+        });
+        card.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateY(0)';
+        });
+      });
+
+      // Simple button click handlers
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => {
+        button.addEventListener('click', function() {
+          const text = this.textContent.trim();
+          console.log('Button clicked:', text);
+
+          // Simple feedback
+          if (text.includes('创建') || text.includes('开始')) {
+            alert('演示模式：这将打开项目创建向导');
+          } else if (text.includes('登录')) {
+            alert('演示模式：这将打开登录界面');
+          } else if (text.includes('下一步')) {
+            alert('演示模式：这将进入下一步');
+          }
+        });
+      });
+
+      // File upload simulation
+      const dropZone = document.querySelector('.border-dashed');
+      if (dropZone) {
+        dropZone.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          this.classList.add('border-blue-500', 'bg-blue-50');
+        });
+
+        dropZone.addEventListener('dragleave', function(e) {
+          e.preventDefault();
+          this.classList.remove('border-blue-500', 'bg-blue-50');
+        });
+
+        dropZone.addEventListener('drop', function(e) {
+          e.preventDefault();
+          this.classList.remove('border-blue-500', 'bg-blue-50');
+          alert('演示模式：文件上传成功！');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

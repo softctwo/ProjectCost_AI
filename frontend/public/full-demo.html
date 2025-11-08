@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>项目成本智能评估系统 - 完整演示</title>
+
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Ant Design CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/antd@5.12.8/dist/reset.css" />
+
+  <!-- Custom styles -->
+  <style>
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Custom scrollbar styles */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    /* Button styles */
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background: #f8fafc;
+      color: #475569;
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    /* Card styles */
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+
+    /* Loading animation */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading {
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #3b82f6;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-lg {
+      width: 32px;
+      height: 32px;
+    }
+
+    /* Hero gradient */
+    .hero-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    /* Status badges */
+    .badge-success {
+      background: #10b981;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-warning {
+      background: #f59e0b;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-info {
+      background: #3b82f6;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-error {
+      background: #ef4444;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* Tab styles */
+    .tab-active {
+      border-bottom: 2px solid #3b82f6;
+      color: #3b82f6;
+    }
+
+    /* Input styles */
+    .input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s ease;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold">PC</span>
+            </div>
+            <h1 class="ml-3 text-xl font-bold text-gray-900">项目成本智能评估系统</h1>
+          </div>
+          <div class="hidden md:flex ml-10 space-x-8">
+            <a href="#dashboard" class="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium">仪表板</a>
+            <a href="#projects" class="text-gray-500 hover:text-blue-600 px-3 py-2 text-sm font-medium">项目</a>
+            <a href="#timesheet" class="text-gray-500 hover:text-blue-600 px-3 py-2 text-sm font-medium">工时</a>
+            <a href="#analytics" class="text-gray-500 hover:text-blue-600 px-3 py-2 text-sm font-medium">分析</a>
+            <a href="#settings" class="text-gray-500 hover:text-blue-600 px-3 py-2 text-sm font-medium">设置</a>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button class="p-2 rounded-full hover:bg-gray-100">
+            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+            </svg>
+          </button>
+          <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+            <span class="text-blue-600 font-medium text-sm">JD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="hero-gradient text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-4xl font-bold mb-4">AI驱动的项目成本评估</h2>
+      <p class="text-xl mb-8 opacity-90">基于SOW文档的智能工作量估算，让项目管理更精准</p>
+      <div class="flex justify-center space-x-4">
+        <button class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+          创建新项目
+        </button>
+        <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+          查看演示
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Section -->
+  <section id="dashboard" class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h3 class="text-2xl font-bold text-center mb-12">智能仪表板</h3>
+
+      <!-- Metrics -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <span class="text-green-600 text-sm font-medium">+8%</span>
+          </div>
+          <h4 class="text-2xl font-bold text-gray-900">24</h4>
+          <p class="text-sm text-gray-600">总项目数</p>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+            </div>
+            <span class="text-green-600 text-sm font-medium">+12%</span>
+          </div>
+          <h4 class="text-2xl font-bold text-gray-900">8</h4>
+          <p class="text-sm text-gray-600">活跃项目</p>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+              </svg>
+            </div>
+            <span class="text-gray-600 text-sm font-medium">0%</span>
+          </div>
+          <h4 class="text-2xl font-bold text-gray-900">24</h4>
+          <p class="text-sm text-gray-600">团队成员</p>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+              </svg>
+            </div>
+            <span class="text-green-600 text-sm font-medium">-5%</span>
+          </div>
+          <h4 class="text-2xl font-bold text-gray-900">2</h4>
+          <p class="text-sm text-gray-600">风险项目</p>
+        </div>
+      </div>
+
+      <!-- Charts and Activity -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-8">
+          <!-- Chart -->
+          <div class="card p-6">
+            <h4 class="text-lg font-semibold text-gray-900 mb-4">项目进展趋势</h4>
+            <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+              <div class="text-center">
+                <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                <p class="text-gray-500">项目进展图表</p>
+                <p class="text-gray-400 text-sm mt-1">显示项目完成情况和工时统计</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Projects -->
+          <div class="card p-6">
+            <h4 class="text-lg font-semibold text-gray-900 mb-4">最近项目</h4>
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center space-x-4">
+                  <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <span class="text-blue-600 font-bold">银</span>
+                  </div>
+                  <div>
+                    <p class="font-medium text-gray-900">某银行1104报送项目</p>
+                    <p class="text-sm text-gray-500">进行中 • 65%完成</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-medium text-gray-900">1,850小时</p>
+                  <p class="text-xs text-gray-500">预估工时</p>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center space-x-4">
+                  <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <span class="text-green-600 font-bold">建</span>
+                  </div>
+                  <div>
+                    <p class="font-medium text-gray-900">建设银行EAST系统</p>
+                    <p class="text-sm text-gray-500">进行中 • 45%完成</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-medium text-gray-900">1,620小时</p>
+                  <p class="text-xs text-gray-500">预估工时</p>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center space-x-4">
+                  <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <span class="text-yellow-600 font-bold">招</span>
+                  </div>
+                  <div>
+                    <p class="font-medium text-gray-900">招商银行监管报送</p>
+                    <p class="text-sm text-gray-500">规划中 • 0%完成</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-medium text-gray-900">1,200小时</p>
+                  <p class="text-xs text-gray-500">预估工时</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="space-y-8">
+          <div class="card p-6">
+            <h4 class="text-lg font-semibold text-gray-900 mb-4">最近活动</h4>
+            <div class="space-y-4">
+              <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span class="text-blue-600 font-medium text-xs">张</span>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-800">
+                    <span class="font-medium">张三</span> 提交了工时记录
+                  </p>
+                  <p class="text-xs text-gray-500">2小时前</p>
+                </div>
+              </div>
+
+              <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span class="text-green-600 font-medium text-xs">李</span>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-800">
+                    <span class="font-medium">李四</span> 完成了需求分析
+                  </p>
+                  <p class="text-xs text-gray-500">4小时前</p>
+                </div>
+              </div>
+
+              <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span class="text-purple-600 font-medium text-xs">王</span>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-800">
+                    <span class="font-medium">王五</span> 创建了新项目
+                  </p>
+                  <p class="text-xs text-gray-500">1天前</p>
+                </div>
+              </div>
+
+              <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-800">
+                    <span class="font-medium">系统</span> 生成了项目评估报告
+                  </p>
+                  <p class="text-xs text-gray-500">2天前</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h3 class="text-2xl font-bold text-center mb-12">项目管理</h3>
+
+      <!-- Project Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div class="card p-6">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h4 class="text-lg font-semibold">监管报表系统升级</h4>
+              <p class="text-gray-600 text-sm">金融科技部</p>
+            </div>
+            <span class="badge-success">进行中</span>
+          </div>
+
+          <div class="space-y-3 mb-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">预估工期</span>
+              <span class="font-medium">12周</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">预估工作量</span>
+              <span class="font-medium">960小时</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">复杂度</span>
+              <span class="font-medium">中等</span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="flex justify-between text-sm mb-1">
+              <span class="text-gray-500">进度</span>
+              <span class="font-medium">65%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 65%"></div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex -space-x-2">
+              <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-medium">JD</div>
+              <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-medium">ML</div>
+              <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs font-medium">+3</div>
+            </div>
+            <button class="btn-secondary">查看详情</button>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h4 class="text-lg font-semibold">客户数据迁移项目</h4>
+              <p class="text-gray-600 text-sm">数据工程部</p>
+            </div>
+            <span class="badge-warning">规划中</span>
+          </div>
+
+          <div class="space-y-3 mb-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">预估工期</span>
+              <span class="font-medium">8周</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">预估工作量</span>
+              <span class="font-medium">640小时</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">复杂度</span>
+              <span class="font-medium">高</span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="flex justify-between text-sm mb-1">
+              <span class="text-gray-500">进度</span>
+              <span class="font-medium">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex -space-x-2">
+              <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-medium">AK</div>
+              <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-white text-xs font-medium">TP</div>
+            </div>
+            <button class="btn-secondary">查看详情</button>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h4 class="text-lg font-semibold">移动银行APP重构</h4>
+              <p class="text-gray-600 text-sm">移动开发部</p>
+            </div>
+            <span class="badge-info">已完成</span>
+          </div>
+
+          <div class="space-y-3 mb-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">预估工期</span>
+              <span class="font-medium">16周</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">预估工作量</span>
+              <span class="font-medium">1280小时</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">复杂度</span>
+              <span class="font-medium">高</span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="flex justify-between text-sm mb-1">
+              <span class="text-gray-500">进度</span>
+              <span class="font-medium">100%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 100%"></div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex -space-x-2">
+              <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white text-xs font-medium">SK</div>
+              <div class="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white text-xs font-medium">RJ</div>
+              <div class="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center text-white text-xs font-medium">+5</div>
+            </div>
+            <button class="btn-secondary">查看详情</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create Project CTA -->
+      <div class="text-center">
+        <button class="btn-primary">
+          <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          创建新项目
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timesheet Section -->
+  <section id="timesheet" class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h3 class="text-2xl font-bold text-center mb-12">工时管理</h3>
+
+      <!-- Timesheet Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="card p-6 text-center">
+          <svg class="w-12 h-12 text-blue-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h4 class="text-2xl font-bold text-gray-900">42.5</h4>
+          <p class="text-sm text-gray-600">本周工时</p>
+        </div>
+
+        <div class="card p-6 text-center">
+          <svg class="w-12 h-12 text-orange-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h4 class="text-2xl font-bold text-gray-900">3.5</h4>
+          <p class="text-sm text-gray-600">加班工时</p>
+        </div>
+
+        <div class="card p-6 text-center">
+          <svg class="w-12 h-12 text-yellow-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h4 class="text-2xl font-bold text-gray-900">2</h4>
+          <p class="text-sm text-gray-600">待审核</p>
+        </div>
+
+        <div class="card p-6 text-center">
+          <svg class="w-12 h-12 text-green-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h4 class="text-2xl font-bold text-gray-900">5</h4>
+          <p class="text-sm text-gray-600">已批准</p>
+        </div>
+      </div>
+
+      <!-- Timesheet Table -->
+      <div class="card p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h4 class="text-lg font-semibold text-gray-900">工时记录</h4>
+          <button class="btn-primary">
+            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            添加工时
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-gray-200">
+                <th class="text-left py-3 px-4 text-sm font-medium text-gray-700">日期</th>
+                <th class="text-left py-3 px-4 text-sm font-medium text-gray-700">项目</th>
+                <th class="text-left py-3 px-4 text-sm font-medium text-gray-700">任务</th>
+                <th class="text-left py-3 px-4 text-sm font-medium text-gray-700">工时</th>
+                <th class="text-left py-3 px-4 text-sm font-medium text-gray-700">状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-gray-100 hover:bg-gray-50">
+                <td class="py-3 px-4 text-sm">2025-01-12</td>
+                <td class="py-3 px-4 text-sm">某银行1104报送项目</td>
+                <td class="py-3 px-4 text-sm">需求分析</td>
+                <td class="py-3 px-4 text-sm font-medium">8h</td>
+                <td class="py-3 px-4">
+                  <span class="badge-success">已批准</span>
+                </td>
+              </tr>
+              <tr class="border-b border-gray-100 hover:bg-gray-50">
+                <td class="py-3 px-4 text-sm">2025-01-11</td>
+                <td class="py-3 px-4 text-sm">建设银行EAST系统</td>
+                <td class="py-3 px-4 text-sm">系统设计</td>
+                <td class="py-3 px-4 text-sm font-medium">7.5h</td>
+                <td class="py-3 px-4">
+                  <span class="badge-warning">待审核</span>
+                </td>
+              </tr>
+              <tr class="border-b border-gray-100 hover:bg-gray-50">
+                <td class="py-3 px-4 text-sm">2025-01-10</td>
+                <td class="py-3 px-4 text-sm">招商银行监管报送</td>
+                <td class="py-3 px-4 text-sm">开发</td>
+                <td class="py-3 px-4 text-sm font-medium">9h</td>
+                <td class="py-3 px-4">
+                  <span class="badge-error">已拒绝</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Analytics Section -->
+  <section id="analytics" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h3 class="text-2xl font-bold text-center mb-12">数据分析</h3>
+
+      <!-- Analytics Tabs -->
+      <div class="border-b border-gray-200 mb-8">
+        <div class="flex space-x-8">
+          <button class="tab-active pb-4 px-1 font-medium text-sm">总览</button>
+          <button class="pb-4 px-1 font-medium text-sm text-gray-500 hover:text-gray-700">项目分析</button>
+          <button class="pb-4 px-1 font-medium text-sm text-gray-500 hover:text-gray-700">团队分析</button>
+        </div>
+      </div>
+
+      <!-- Analytics Content -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <span class="text-green-600 text-sm font-medium">+8%</span>
+          </div>
+          <h4 class="text-2xl font-bold text-gray-900">24</h4>
+          <p class="text-sm text-gray-600 mb-2">项目总数</p>
+          <p class="text-xs text-gray-500">比上月增长 8%</p>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <span class="text-green-600 text-sm font-medium">+12%</span>
+          </div>
+          <h4 class="text-2xl font-bold text-gray-900">1,892</h4>
+          <p class="text-sm text-gray-600 mb-2">总工时</p>
+          <p class="text-xs text-gray-500">比上月增长 12%</p>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <span class="text-red-600 text-sm font-medium">-3%</span>
+          </div>
+          <h4 class="text-2xl font-bold text-gray-900">¥286.5万</h4>
+          <p class="text-sm text-gray-600 mb-2">项目成本</p>
+          <p class="text-xs text-gray-500">比上月减少 3%</p>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+              </svg>
+            </div>
+            <span class="text-green-600 text-sm font-medium">+5%</span>
+          </div>
+          <h4 class="text-2xl font-bold text-gray-900">87%</h4>
+          <p class="text-sm text-gray-600 mb-2">团队效率</p>
+          <p class="text-xs text-gray-500">比上月提升 5%</p>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="card p-6">
+          <h4 class="text-lg font-semibold text-gray-900 mb-4">月度趋势</h4>
+          <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+            <div class="text-center">
+              <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+              <p class="text-gray-500">月度趋势图表</p>
+              <p class="text-gray-400 text-sm mt-1">显示项目数量、工时和成本趋势</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <h4 class="text-lg font-semibold text-gray-900 mb-4">项目状态分布</h4>
+          <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+            <div class="text-center">
+              <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+              </svg>
+              <p class="text-gray-500">项目状态饼图</p>
+              <p class="text-gray-400 text-sm mt-1">显示各状态项目的数量分布</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Settings Section -->
+  <section id="settings" class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h3 class="text-2xl font-bold text-center mb-12">系统设置</h3>
+
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-sm">
+          <!-- Settings Tabs -->
+          <div class="border-b border-gray-200">
+            <div class="flex space-x-8 px-6">
+              <button class="tab-active py-4 px-1 font-medium text-sm">个人资料</button>
+              <button class="pb-4 px-1 font-medium text-sm text-gray-500 hover:text-gray-700">安全设置</button>
+              <button class="pb-4 px-1 font-medium text-sm text-gray-500 hover:text-gray-700">通知设置</button>
+              <button class="pb-4 px-1 font-medium text-sm text-gray-500 hover:text-gray-700">外观设置</button>
+            </div>
+          </div>
+
+          <!-- Settings Content -->
+          <div class="p-6">
+            <h4 class="text-lg font-semibold text-gray-900 mb-6">基本信息</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">姓名</label>
+                <input type="text" class="input" value="张三" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">邮箱</label>
+                <input type="email" class="input" value="zhangsan@example.com" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">电话</label>
+                <input type="tel" class="input" value="+86 138 0013 8000" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">部门</label>
+                <select class="input">
+                  <option>金融科技部</option>
+                  <option>数据工程部</option>
+                  <option>移动开发部</option>
+                  <option>质量保证部</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex justify-end mt-6">
+              <button class="btn-primary">
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                保存更改
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h4 class="text-lg font-semibold mb-4">项目成本智能评估系统</h4>
+          <p class="text-gray-400">基于AI的项目工作量评估工具，让项目管理更精准、更高效。</p>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-4">核心功能</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li>SOW文档智能解析</li>
+            <li>多维复杂度评估</li>
+            <li>AI工作量估算</li>
+            <li>项目进度跟踪</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-4">技术栈</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li>React 18</li>
+            <li>Tailwind CSS</li>
+            <li>Framer Motion</li>
+            <li>Node.js</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+        <p>&copy; 2025 项目成本智能评估系统. 保留所有权利.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Simple interactive elements
+    document.addEventListener('DOMContentLoaded', function() {
+      // Smooth scrolling for navigation links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+
+      // Add hover effects to cards
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-2px)';
+        });
+        card.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateY(0)';
+        });
+      });
+
+      // Tab switching functionality
+      const tabButtons = document.querySelectorAll('button[class*="tab-"]');
+      tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Remove active class from all tabs in the same container
+          const container = this.parentElement;
+          container.querySelectorAll('button').forEach(tab => {
+            tab.classList.remove('tab-active');
+            tab.classList.add('text-gray-500');
+          });
+
+          // Add active class to clicked tab
+          this.classList.add('tab-active');
+          this.classList.remove('text-gray-500');
+        });
+      });
+
+      // Button click handlers
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => {
+        button.addEventListener('click', function() {
+          const text = this.textContent.trim();
+          console.log('Button clicked:', text);
+
+          // Simple feedback for demo purposes
+          if (text.includes('创建') || text.includes('添加')) {
+            alert('演示模式：这将打开创建表单');
+          } else if (text.includes('查看')) {
+            alert('演示模式：这将跳转到详情页面');
+          } else if (text.includes('保存')) {
+            alert('演示模式：设置已保存');
+          } else if (text.includes('登录') || text.includes('注册')) {
+            alert('演示模式：这将跳转到登录页面');
+          }
+        });
+      });
+
+      // Form input interactions
+      const inputs = document.querySelectorAll('input, select, textarea');
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.classList.add('transform', 'scale-105');
+        });
+        input.addEventListener('blur', function() {
+          this.parentElement.classList.remove('transform', 'scale-105');
+        });
+      });
+
+      // Progress bar animations
+      const progressBars = document.querySelectorAll('.progress-fill');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const width = entry.target.style.width;
+            entry.target.style.width = '0%';
+            setTimeout(() => {
+              entry.target.style.width = width;
+            }, 100);
+          }
+        });
+      });
+
+      progressBars.forEach(bar => observer.observe(bar));
+
+      // Navbar scroll effect
+      let lastScrollTop = 0;
+      window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('nav');
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+          navbar.style.transform = 'translateY(-100%)';
+        } else {
+          navbar.style.transform = 'translateY(0)';
+        }
+
+        lastScrollTop = scrollTop;
+      });
+    });
+  </script>
+</body>
+</html>
